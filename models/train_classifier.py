@@ -4,7 +4,6 @@ import re
 import pandas as pd
 import numpy as np
 import nltk
-import gensim
 import pickle
 
 nltk.download('stopwords')
@@ -14,6 +13,7 @@ nltk.download('wordnet')
 from sqlalchemy import create_engine
 from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
+from sklearn.multioutput import MultiOutputClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 from sklearn.metrics import classification_report
@@ -29,7 +29,7 @@ def load_data(database_filepath):
     OUTPUT: features for ML pipeline
     '''
     # read in file
-    engine = create_engine(f"sqlite:///{database_filepath}.db")
+    engine = create_engine(f"sqlite:///{database_filepath}")
 
     # load to database
     df = pd.read_sql_table(database_filepath, engine)
@@ -48,19 +48,19 @@ def tokenize(text):
     stop_words = stopwords.words("english")
 
     detected_urls = re.findall(url_regex, text)
-        for url in detected_urls:
-            text = text.replace(url, "urlplaceholder")
+    for url in detected_urls:
+        text = text.replace(url, "urlplaceholder")
 
-        tokens = word_tokenize(text)
-        lemmatizer = WordNetLemmatizer()
+    tokens = word_tokenize(text)
+    lemmatizer = WordNetLemmatizer()
 
-        clean_tokens = []
-        for tok in tokens :
-            if tok not in stop_words:
-                clean_tok = lemmatizer.lemmatize(tok).lower().strip()
-                clean_tokens.append(clean_tok)
+    clean_tokens = []
+    for tok in tokens :
+        if tok not in stop_words:
+            clean_tok = lemmatizer.lemmatize(tok).lower().strip()
+            clean_tokens.append(clean_tok)
 
-        return clean_tokens
+    return clean_tokens
 
 
 def build_model():
