@@ -15,8 +15,8 @@ from sqlalchemy import create_engine
 app = Flask(__name__)
 
 # TODO: change names of the databes filename (.db) and the model name (.pkl)
-database_filename = 'DR-test4.db'
-model_name = 'classifier-3.pkl'
+database_filename = 'DisasterResponse.db'
+model_name = 'classifier.pkl'
 
 def tokenize(text):
     tokens = word_tokenize(text)
