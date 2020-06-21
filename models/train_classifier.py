@@ -32,7 +32,7 @@ def load_data(database_filepath):
     engine = create_engine(f"sqlite:///{database_filepath}")
 
     # load to database
-    df = pd.read_sql_table(database_filepath, engine)
+    df = pd.read_sql_table('DisasterResponse', engine)
     
 
     # define features and label arrays
