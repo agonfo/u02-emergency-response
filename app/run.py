@@ -46,14 +46,14 @@ def index():
     od_columns = ['request' , 'offer']
     od_count = []
 
-    cat_columns = df.drop(columns=['message' , 'original' , 'id' , 'genre' , 'related' , 'request' , 'offer']).columns.tolist()
+    cat_columns = df.drop(columns=['message' , 'original' , 'id' , 'genre' , 'related' , 'request' , 'offer' , 'aid_related', 'weather_related' , 'direct_report', 'other_aid']).columns.tolist()
     cat_count = []
 
     for col in od_columns:
         od_count.append(df.groupby(col).count()['id'][1])
     
     offer_demand_counts = pd.Series(od_count , index=od_columns)
-    offer_demand_names = od_columns
+    offer_demand_names = list(offer_demand_counts.index)
 
     for col in cat_columns:
         serie = df.groupby(col).count()['id']
@@ -63,7 +63,7 @@ def index():
             cat_count.append(0)
 
     categorie_counts = pd.Series(cat_count , index=cat_columns).sort_values(ascending=False)
-    categorie_names = cat_columns
+    categorie_names = list(categorie_counts.index)
 
     
     # create visuals
