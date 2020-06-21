@@ -2,7 +2,7 @@ import sys
 import pandas as pd
 import sqlalchemy
 
-from sqlalchemy import create_enginep
+from sqlalchemy import create_engine
 
 
 def load_data(messages_filepath, categories_filepath):
@@ -47,7 +47,7 @@ def save_data(df, database_filename):
             database_filename: str - database file name
     OUTPUT: none
     '''
-    engine = create_engine(f"sqlite:///{database_filename}.db")
+    engine = create_engine(f"sqlite:///{database_filename}")
     df.to_sql(database_filename, engine, index=False) 
 
 def main():
