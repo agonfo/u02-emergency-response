@@ -8,11 +8,13 @@ from nltk.tokenize import word_tokenize
 
 from flask import Flask
 from flask import render_template, request, jsonify
-from plotly.graph_objs import Bar
+from plotly.graph_objs import Bar , Pie
 from sqlalchemy import create_engine
 
 
 app = Flask(__name__)
+
+# TODO: change names of the databes filename (.db) and the model name (.pkl)
 database_filename = 'DR-test4.db'
 model_name = 'classifier-3.pkl'
 
@@ -41,31 +43,79 @@ model = joblib.load(f"../models/{model_name}")
 def index():
     
     # extract data needed for visuals
-    # TODO: Below is an example - modify to extract data for your own visuals
-    genre_counts = df.groupby('genre').count()['message']
-    genre_names = list(genre_counts.index)
+    od_columns = ['request' , 'offer']
+    od_count = []
+
+    cat_columns = df.drop(columns=['message' , 'original' , 'id' , 'genre' , 'related' , 'request' , 'offer']).columns.tolist()
+    cat_count = []
+
+    for col in od_columns:
+        od_count.append(df.groupby(col).count()['id'][1])
+    
+    offer_demand_counts = pd.Series(od_count , index=od_columns)
+    offer_demand_names = od_columns
+
+    for col in cat_columns:
+        serie = df.groupby(col).count()['id']
+        if serie.size >= 2:
+            cat_count.append(serie[1])
+        else:
+            cat_count.append(0)
+
+    categorie_counts = pd.Series(cat_count , index=cat_columns).sort_values(ascending=False)
+    categorie_names = cat_columns
+
     
     # create visuals
-    # TODO: Below is an example - modify to create your own visuals
     graphs = [
         {
             'data': [
-                Bar(
-                    x=genre_names,
-                    y=genre_counts
+                Pie(
+                    labels=categorie_names,
+                    values=categorie_counts
                 )
             ],
 
             'layout': {
-                'title': 'Distribution of Message Genres',
+                'title': 'Distribution Categories'            
+            }
+        },
+        {
+            'data': [
+                Bar(
+                    x=offer_demand_names,
+                    y=offer_demand_counts
+                )
+            ],
+
+            'layout': {
+                'title': 'Distribution of Offer and Request',
                 'yaxis': {
                     'title': "Count"
                 },
                 'xaxis': {
-                    'title': "Genre"
+                    'title': " "
                 }
             }
-        }
+        },
+        {
+            'data': [
+                Bar(
+                    x=categorie_names,
+                    y=categorie_counts
+                )
+            ],
+
+            'layout': {
+                'title': 'Distribution Categories',
+                'yaxis': {
+                    'title': "Count"
+                },
+                'xaxis': {
+                    'title': " "
+                }
+            }
+        } 
     ]
     
     # encode plotly graphs in JSON
