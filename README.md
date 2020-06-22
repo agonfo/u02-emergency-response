@@ -12,8 +12,6 @@
 The libraries used are the common - pandas and matplotlib - for more information please refer to `requiremenst.txt`
 - The code should run with no issues using Python 3.7
 
-NOTE: If necessary, please in line 18 and 19 of run.py , change the database_filenames and model_name used when calling process_data & train_classifier
-
 1. Run the following commands in the project's root directory to set up your database and model.
 
     - To run ETL pipeline that cleans data and stores in database
@@ -25,7 +23,6 @@ NOTE: If necessary, please in line 18 and 19 of run.py , change the database_fil
     `python run.py`
 
 3. Go to http://0.0.0.0:3001/ or http://localhost:3001/ to visualize the webpage
-
 
 ## Project Motivation<a name="motivation"></a>
 
