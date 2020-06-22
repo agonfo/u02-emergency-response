@@ -48,7 +48,7 @@ def save_data(df, database_filename):
     OUTPUT: none
     '''
     engine = create_engine(f"sqlite:///{database_filename}")
-    df.to_sql('DisasterResponse', engine, index=False) 
+    df.to_sql('DisasterResponse', engine, index=False , if_exists='replace') 
 
 def main():
     if len(sys.argv) == 4:
