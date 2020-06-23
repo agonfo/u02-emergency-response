@@ -20,6 +20,7 @@ from sklearn.metrics import classification_report
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from nltk.stem.wordnet import WordNetLemmatizer
+from sklearn.model_selection import GridSearchCV
 
 
 def load_data(database_filepath):
@@ -44,6 +45,12 @@ def load_data(database_filepath):
 
 
 def tokenize(text):
+    '''
+    takes a sentence and return a list of the main words of the sentence
+    INPUT: str 
+    OUTPUT: list of str
+    '''
+
     url_regex = 'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+'
     stop_words = stopwords.words("english")
 
@@ -73,13 +80,21 @@ def build_model():
     but it takes more time to process and the accuaracy and f1-score are almost the same
     '''
 
-    model_pipeline = Pipeline([
+    pipeline = Pipeline([
         ('vect' , CountVectorizer(tokenizer=tokenize)),
         ('tfidf' , TfidfTransformer()),             
         ('clf' , MultiOutputClassifier(RandomForestClassifier()))
     ])
 
-    return model_pipeline
+    parameters = {
+        'vect__max_df': (0.75, 1.0),
+        'vect__ngram_range': ((1, 1), (1, 2)),
+        'clf__estimator__n_estimators': [10, 50],
+    }
+
+    cv = GridSearchCV(pipeline, param_grid=parameters)
+
+    return cv
 
 
 def evaluate_model(model, X_test, Y_test, category_names):
@@ -91,6 +106,7 @@ def evaluate_model(model, X_test, Y_test, category_names):
 
     accuracy = (Y_pred == Y_test).mean()
     print("Accuracy:", accuracy)
+    print("\nBest Parameters:", model.best_params_)
 
 
 def save_model(model, model_filepath):
