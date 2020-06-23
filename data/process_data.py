@@ -1,6 +1,7 @@
 import sys
 import pandas as pd
 import sqlalchemy
+import random
 
 from sqlalchemy import create_engine
 
@@ -34,6 +35,7 @@ def clean_data(df):
     for column in categories:
         categories[column] = categories[column].astype(str).str[slice(-1, -2 , -1)]    
         categories[column] = categories[column].astype(int)
+        categories[column] = categories[column].replace(2 , random.randrange(2))
 
     df = df.drop(columns=['categories'])
     df = df.join(categories).drop_duplicates()
