@@ -14,7 +14,7 @@ from sqlalchemy import create_engine
 
 app = Flask(__name__)
 
-# TODO: change names of the databes filename (.db) and the model name (.pkl)
+# names of the databes filename (.db) and the model name (.pkl)
 database_filename = 'DisasterResponse.db'
 model_name = 'classifier.pkl'
 
